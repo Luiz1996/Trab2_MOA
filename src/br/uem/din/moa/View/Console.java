@@ -11,15 +11,17 @@ public class Console {
 
     public static int showMenu() {
         Scanner input = new Scanner(System.in);
-        System.out.println("+--- Menu do Problema do Caixeiro Viajante -----+");
-        System.out.println("|  01) Importar Cidades                         |");
-        System.out.println("|  02) Imprimir Cidades                         |");
-        System.out.println("|  03) Calcular Vizinho Mais Próximo            |");
-        System.out.println("|  04) Inserção Mais Próxima                    |");
-        System.out.println("|  05) Resetar Informações                      |");
-        System.out.println("|  06) Gerar cidades (Randômico)                |");
-        System.out.println("|  00) Sair                                     |");
-        System.out.println("+-----------------------------------------------+");
+        System.out.println("+------ Menu do Problema do Caixeiro Viajante -------+");
+        System.out.println("|  01) Importar Cidades                              |");
+        System.out.println("|  02) Imprimir Cidades                              |");
+        System.out.println("|  03) Calcular Vizinho Mais Próximo                 |");
+        System.out.println("|  04) Inserção Mais Próxima                         |");
+        System.out.println("|  05) Resetar Informações                           |");
+        System.out.println("|  06) Simulated Annealing com Vizinho Mais Próximo  |");
+        System.out.println("|  07) Simulated Annealing com Inserção Mais Próxima |");
+        System.out.println("|  08) Gerar cidades (Randômico)                     |");
+        System.out.println("|  00) Sair                                          |");
+        System.out.println("+----------------------------------------------------+");
         System.out.print("Opcao: ");
 
         try{

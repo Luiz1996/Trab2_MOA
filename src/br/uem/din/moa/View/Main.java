@@ -59,6 +59,20 @@ public class Main {
                     JOptionPane.showMessageDialog(null, "As cidades foram apagadas com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                     break;
                 case 6:
+                    if(myCities.size() > 0){
+                        System.out.println("simulated annealing com vizinho mais proximo");
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Use a Opção 1 para importar as cidades na aplicação.", "Falha", JOptionPane.ERROR_MESSAGE);
+                    }
+                    break;
+                case 7:
+                    if(myCities.size() > 0){
+                        System.out.println("simulated annealing com inserção mais proxima");
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Use a Opção 1 para importar as cidades na aplicação.", "Falha", JOptionPane.ERROR_MESSAGE);
+                    }
+                    break;
+                case 8:
                     fileController.makeCitiesFile();
                     Console.cleanDisplay();
                     break;

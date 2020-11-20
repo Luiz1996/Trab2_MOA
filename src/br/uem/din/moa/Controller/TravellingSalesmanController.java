@@ -18,7 +18,7 @@ public class TravellingSalesmanController {
     long timeToSecond;
 
     //heurística do vizinho mais próximo
-    public void nearestNeighborHeuristicTSP(List<City> myCities) {
+    public List<Route> nearestNeighborHeuristicTSP(List<City> myCities) {
         System.out.println("Iniciando rota utilizando a Heurística do Vizinho Mais Próximo...");
         System.out.println("A primeira cidade a entrar na rota será a C000.");
 
@@ -81,10 +81,11 @@ public class TravellingSalesmanController {
 
         //Imprimindo resultados
         printRouteTSP(myRoutes, timeToSecond);
+        return myRoutes;
     }
 
     //heurística da inserção mais próxima
-    public void nearestInsertionHeuristicTSP(List<City> myCities) {
+    public List<Route> nearestInsertionHeuristicTSP(List<City> myCities) {
         System.out.println("Iniciando rota utilizando a Heurística da Inserção Mais Próxima...");
         System.out.println("O ciclo hamiltoniano inicial conterá as cidades C000, C001 e C002.");
 
@@ -151,6 +152,7 @@ public class TravellingSalesmanController {
 
         //Imprimindo resultados
         printRouteTSP(myRoutes, timeToSecond);
+        return myRoutes;
     }
 
     //método responsável por iniciar o ciclo contendo as cidades C000, C001 e C002

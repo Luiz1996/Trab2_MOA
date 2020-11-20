@@ -14,6 +14,9 @@ public class FileController {
     Scanner input = new Scanner(System.in);
 
     public List<City> importCities(List<City> myCities){
+        int initialColumn = 0;
+        int count;
+        int position = 0;
         String pathFile;
         City actualCity = new City();
 
@@ -30,19 +33,33 @@ public class FileController {
 
         //abrindo arquivo para leitura
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(pathFile))){
-
             //obtendo dados da primeira linha do arquivo texto
-            String completeLine = bufferedReader.readLine().trim();
+            String completeLine = bufferedReader.readLine().replace("\"\",","").trim();
             String[] distances = completeLine.split(",");
 
+            //variavel auxiliar para leitura das demais linhas
+            count = (distances.length - 1);
+
+            //esse try-catch tem como função identificar se o arquivo a ser importado segue o padrão do primeiro trabalho
+            //ou do segundo, pois no segundo ele possui nomes de cidades e dariam erro na hora de parsear as distancias
+            //Então, se for identificado que é o arquivo do segundo trabalho as seguintes informações serão desconsideradas
+            // - Toda primeira linha do arquivo;
+            // - As duas primeiras colunas(separadas por virgula) do arquivo, para todas as demais linhas.
+            try{
+                Integer.parseInt(distances[0]);
+            }catch (Exception ie){
+                completeLine = bufferedReader.readLine().trim();
+                distances = completeLine.split(",");
+                initialColumn = 2;
+                count = (distances.length - 3);
+            }
+
             //setando dados da primeira linha
-            for(int i = 0; i < distances.length; i++){
-                actualCity.getDistancias().add(i, Integer.parseInt(distances[i].trim()));
+            for(int i = initialColumn; i < distances.length; i++){
+                actualCity.getDistancias().add(position, Integer.parseInt(distances[i].trim()));
+                position++;
             }
             myCities.add(actualCity);
-
-            //variavel auxiliar para leitura das demais linhas
-            int count = (distances.length - 1);
 
             while(count > 0){
                 count--;
@@ -53,8 +70,10 @@ public class FileController {
                 distances = completeLine.split(",");
 
                 //setando dados das demais linhas
-                for(int i = 0; i < distances.length; i++){
-                    actualCity.getDistancias().add(i, Integer.parseInt(distances[i].trim()));
+                position = 0;
+                for(int i = initialColumn; i < distances.length; i++){
+                    actualCity.getDistancias().add(position, Integer.parseInt(distances[i].trim()));
+                    position++;
                 }
                 myCities.add(actualCity);
             }
