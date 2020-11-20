@@ -113,9 +113,6 @@ public class FileController {
             return;
         }
 
-        System.out.println("numberOfCities: " + numberOfCities);
-        System.out.println("maxDistanceValue: " + maxDistanceValue);
-
         //realizando validações para garantir que algum dado será gerado, contudo, que não atrapalhe a formatação
         if(numberOfCities > 999 || maxDistanceValue > 9999 || numberOfCities <= 0 || maxDistanceValue <= 0){
             JOptionPane.showMessageDialog(null, "O número de cidades ou a distância entre as cidades não são válidos.", "Falha", JOptionPane.ERROR_MESSAGE);

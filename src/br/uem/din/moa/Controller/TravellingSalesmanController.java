@@ -13,19 +13,10 @@ public class TravellingSalesmanController {
     final int THOUSAND = 1000;
     final int TEN_THOUSAND = 10000;
     int totalDistance;
-    long initTime;
-    long finalTime;
-    long timeToSecond;
 
     //heurística do vizinho mais próximo
     public List<Route> nearestNeighborHeuristicTSP(List<City> myCities) {
-        System.out.println("Iniciando rota utilizando a Heurística do Vizinho Mais Próximo...");
-        System.out.println("A primeira cidade a entrar na rota será a C000.");
-
-        initTime = System.currentTimeMillis();
-
         //variáveis auxiliares
-        totalDistance = 0;
         int actual = 0;
         int lastPosition;
         int[] citiesOnRoute = new int[(myCities.size() + 1)];
@@ -75,24 +66,12 @@ public class TravellingSalesmanController {
         myRoutes.get(lastPosition).setFinalVertex(ZERO);
         myRoutes.get(lastPosition).setVertexDistances(myCities.get(myRoutes.get(lastPosition).getFinalVertex()).getDistancias().get(myRoutes.get(lastPosition).getInitialVertex()));
 
-        //imprimindo tempo de execução
-        finalTime = System.currentTimeMillis();
-        timeToSecond = ((finalTime - initTime) / THOUSAND);
-
-        //Imprimindo resultados
-        printRouteTSP(myRoutes, timeToSecond);
         return myRoutes;
     }
 
     //heurística da inserção mais próxima
     public List<Route> nearestInsertionHeuristicTSP(List<City> myCities) {
-        System.out.println("Iniciando rota utilizando a Heurística da Inserção Mais Próxima...");
-        System.out.println("O ciclo hamiltoniano inicial conterá as cidades C000, C001 e C002.");
-
-        initTime = System.currentTimeMillis();
-
         //variáveis auxiliares
-        totalDistance = 0;
         int newVertexOnTheRoute = 0;
         int indexToBeChanged = 0;
         int[] citiesOnRoute = new int[myCities.size()];
@@ -145,13 +124,6 @@ public class TravellingSalesmanController {
             }
             myRoutes.add(route);
         }
-
-        //imprimindo tempo de execução
-        finalTime = System.currentTimeMillis();
-        timeToSecond = ((finalTime - initTime) / THOUSAND);
-
-        //Imprimindo resultados
-        printRouteTSP(myRoutes, timeToSecond);
         return myRoutes;
     }
 
@@ -180,8 +152,32 @@ public class TravellingSalesmanController {
         return myRoutes;
     }
 
+    //heurística da inserção mais próxima
+    public List<Route> simulatedAnnealingMetaHeuristicTSP(List<City> myCities, List<Route> initialRoute) {
+        List<Route> myRoute = new ArrayList<>();
+
+        //corrigir retorno depois
+        //return myRoute;
+        return initialRoute;
+    }
+
     //imprimindo a rota com a formatação adequada
-    private void printRouteTSP(List<Route> myRoutes, long timeToSecond) {
+    public void printRouteTSP(List<Route> myRoutes, int routeType) {
+        totalDistance = 0;
+        if(routeType == 3){
+            System.out.println("Iniciando impressão da rota gerada pela Heurística do Vizinho Mais Próximo...");
+            System.out.println("A primeira cidade a entrar na rota foi a C000.");
+        }else if(routeType == 4){
+            System.out.println("Iniciando impressão da rota gerada pela Heurística da Inserção Mais Próxima...");
+            System.out.println("O ciclo hamiltoniano inicial tinha apenas as cidades C000, C001 e C002.");
+        }else if(routeType == 5){
+            System.out.println("Iniciando impressão da rota gerada pela Meta-Heurística Simulated Annealing com Vizinho Mais Próximo...");
+            System.out.println("A primeira cidade a entrar na rota foi a C000.");
+        }else if(routeType == 6){
+            System.out.println("Iniciando impressão da rota gerada pela Meta-Heurística Simulated Annealing com Inserção Mais Próxima...");
+            System.out.println("O ciclo hamiltoniano inicial tinha apenas as cidades C000, C001 e C002.");
+        }
+
         System.out.println("Rota realizada.: ");
 
         System.out.println("\t\t\t\t\t+------------------------+");
@@ -224,6 +220,5 @@ public class TravellingSalesmanController {
         }
         System.out.println("\t\t\t\t\t+------------------------+");
         System.out.println("Distância Total: " + totalDistance);
-        System.out.println("Tempo de execução em segundos: " + timeToSecond + "s.");
     }
 }
