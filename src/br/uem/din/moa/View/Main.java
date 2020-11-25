@@ -64,9 +64,12 @@ public class Main {
                 case 5:
                     if(myCities.size() > 0){
                         myRoute = travellingSalesmanController.nearestNeighborHeuristicTSP(myCities);
-                        myRoute = travellingSalesmanController.simulatedAnnealingMetaHeuristicTSP(myCities, myRoute);
+                        myRoute = travellingSalesmanController.getParametersForSimulatedAnnealing(myCities, myRoute);
                         routeType = 5;
-                        JOptionPane.showMessageDialog(null, "A meta-heurística Simulated Annealing com Vizinho Mais Próximo gerou a rota com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                        //Console.cleanDisplay();
+                        if(myRoute.size() > 0){
+                            JOptionPane.showMessageDialog(null, "A meta-heurística Simulated Annealing com Vizinho Mais Próximo gerou a rota com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }else{
                         JOptionPane.showMessageDialog(null, "Use a Opção 1 para importar as cidades na aplicação.", "Falha", JOptionPane.ERROR_MESSAGE);
                     }
@@ -74,9 +77,12 @@ public class Main {
                 case 6:
                     if(myCities.size() > 0){
                         myRoute = travellingSalesmanController.nearestInsertionHeuristicTSP(myCities);
-                        myRoute = travellingSalesmanController.simulatedAnnealingMetaHeuristicTSP(myCities, myRoute);
+                        myRoute = travellingSalesmanController.getParametersForSimulatedAnnealing(myCities, myRoute);
                         routeType = 6;
-                        JOptionPane.showMessageDialog(null, "A meta-heurística Simulated Annealing com Inserção Mais Próxima gerou a rota com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                        //Console.cleanDisplay();
+                        if(myRoute.size() > 0){
+                            JOptionPane.showMessageDialog(null, "A meta-heurística Simulated Annealing com Inserção Mais Próxima gerou a rota com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }else{
                         JOptionPane.showMessageDialog(null, "Use a Opção 1 para importar as cidades na aplicação.", "Falha", JOptionPane.ERROR_MESSAGE);
                     }

@@ -2,17 +2,19 @@ package br.uem.din.moa.Controller;
 
 import br.uem.din.moa.Model.City;
 import br.uem.din.moa.Model.Route;
+import br.uem.din.moa.View.Console;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.*;
+import java.util.*;
 
 public class TravellingSalesmanController {
+    Scanner input = new Scanner(System.in);
+    Random random = new Random();
     final int ZERO = 0;
     final int TEN = 10;
     final int HUNDRED = 100;
     final int THOUSAND = 1000;
     final int TEN_THOUSAND = 10000;
-    int totalDistance;
 
     //heurística do vizinho mais próximo
     public List<Route> nearestNeighborHeuristicTSP(List<City> myCities) {
@@ -152,18 +154,116 @@ public class TravellingSalesmanController {
         return myRoutes;
     }
 
-    //heurística da inserção mais próxima
-    public List<Route> simulatedAnnealingMetaHeuristicTSP(List<City> myCities, List<Route> initialRoute) {
-        List<Route> myRoute = new ArrayList<>();
+    public List<Route> getParametersForSimulatedAnnealing (List<City> myCities, List<Route> initialRoute){
+        //declaração de variáveis/parâmetros
+        double decrementTemperature = decreaseInTemperature();
+        double initialTemperature = 0;
+        double finalTemperature = 0;
+        int numberOfNeighbors = 0;
 
-        //corrigir retorno depois
-        //return myRoute;
-        return initialRoute;
+        //atualizando/setando custo total obtido na rota inicial
+        initialRoute.get(0).setTotalCostRoute(getRouteCost(initialRoute));
+
+        //obtendo informações sobre a temperatura inicial
+        System.out.print("Informe a temperatura inicial(>0.0): ");
+        try{
+            initialTemperature = input.nextDouble();
+            if(initialTemperature <= 0){
+                JOptionPane.showMessageDialog(null, "A temperatura inicial deve, obrigatoriamente, ser maior que zero.", "Falha", JOptionPane.ERROR_MESSAGE);
+                Console.cleanDisplay();
+                return new ArrayList<>();
+            }
+        }catch (InputMismatchException ie){
+            JOptionPane.showMessageDialog(null, "O valor informado é inválido!\n\nAplicação será encerrada!", "Falha", JOptionPane.ERROR_MESSAGE);
+            Console.endsApplication();
+        }
+
+        //obtendo informações sobre a temperatura final
+        System.out.print("Informe a temperatura final(>=0.0 e <" + initialTemperature + "): ");
+        try{
+            finalTemperature = input.nextDouble();
+            if(finalTemperature < 0 || finalTemperature >= initialTemperature){
+                JOptionPane.showMessageDialog(null, "A temperatura final deve, obrigatoriamente, ser maior ou igual a zero e também menor que a temperatura inicial[0.0 ~ " + initialTemperature + "].", "Falha", JOptionPane.ERROR_MESSAGE);
+                Console.cleanDisplay();
+                return new ArrayList<>();
+            }
+        }catch (InputMismatchException ie){
+            JOptionPane.showMessageDialog(null, "O valor informado é inválido!\n\nAplicação será encerrada!", "Falha", JOptionPane.ERROR_MESSAGE);
+            Console.endsApplication();
+        }
+
+        //obtendo informações sobre a quantidade de vizinhos que serão avaliados
+        System.out.print("Informe a quantidade de vizinhos(Nit; >0): ");
+        try{
+            numberOfNeighbors = input.nextInt();
+            if(numberOfNeighbors <= 0){
+                JOptionPane.showMessageDialog(null, "A vizinhança a ser avaliada deve, obrigatoriamente, ser maior que zero.", "Falha", JOptionPane.ERROR_MESSAGE);
+                Console.cleanDisplay();
+                return new ArrayList<>();
+            }
+        }catch (InputMismatchException ie){
+            JOptionPane.showMessageDialog(null, "O valor informado é inválido!\n\nAplicação será encerrada!", "Falha", JOptionPane.ERROR_MESSAGE);
+            Console.endsApplication();
+        }
+
+        Console.cleanDisplay();
+
+        System.out.println("A quantidade de vizinhos fornecidos é de: " + numberOfNeighbors);
+        System.out.println("A temperatura inicial fornecida é de: " + initialTemperature);
+        System.out.println("A temperatura final fornecida é de: " + finalTemperature);
+        System.out.printf("A temperatura será decrementada de %.2fºC em %.2fºC graus.\n", decrementTemperature, decrementTemperature);
+        System.out.println("A rota inicial possui um custo de: " + initialRoute.get(0).getTotalCostRoute());
+
+        return simulatedAnnealingMetaHeuristicTSP(myCities, initialRoute, initialTemperature, finalTemperature, numberOfNeighbors, decrementTemperature);
+    }
+
+    //heurística da inserção mais próxima
+    private List<Route> simulatedAnnealingMetaHeuristicTSP(List<City> myCities, List<Route> initialRoute, double initialTemperature, double finalTemperature, int numberOfNeighbors, double decrementTemperature) {
+        //variáveis auxiliares
+        List<Route> actualRoute = initialRoute;
+        List<Route> bestRoute = initialRoute;
+
+        //Math.exp(Double.MAX_VALUE);
+
+        while(initialTemperature > finalTemperature){
+
+            for(int evaluateNeighbors = 0; evaluateNeighbors < numberOfNeighbors; evaluateNeighbors++){
+
+
+
+            }
+            //atualiza a temperatura
+            initialTemperature -= decrementTemperature;
+        }
+
+        return actualRoute;
+    }
+
+    private int getRouteCost(List<Route> myRoute){
+        int totalRouteCost = 0;
+
+        for(Route route: myRoute){
+            totalRouteCost += route.getVertexDistances();
+        }
+
+        return totalRouteCost;
+    }
+
+    private double decreaseInTemperature(){
+        double decrementTemperature = random.nextDouble();
+
+        while(decrementTemperature < 0.5 || decrementTemperature > 0.9){
+            decrementTemperature = random.nextDouble();
+        }
+
+        return decrementTemperature;
     }
 
     //imprimindo a rota com a formatação adequada
     public void printRouteTSP(List<Route> myRoutes, int routeType) {
-        totalDistance = 0;
+        int totalDistance = 0;
+
+        //imprimindo cabeçalho de informações
         if(routeType == 3){
             System.out.println("Iniciando impressão da rota gerada pela Heurística do Vizinho Mais Próximo...");
             System.out.println("A primeira cidade a entrar na rota foi a C000.");
@@ -178,6 +278,7 @@ public class TravellingSalesmanController {
             System.out.println("O ciclo hamiltoniano inicial tinha apenas as cidades C000, C001 e C002.");
         }
 
+        //iniciando impressão de rota
         System.out.println("Rota realizada.: ");
 
         System.out.println("\t\t\t\t\t+------------------------+");

@@ -6,8 +6,13 @@ public class Route {
     private int initialVertex;
     private int vertexDistances;
     private int finalVertex;
+    private int totalCostRoute;
 
     public Route(){}
+
+    public int getTotalCostRoute() { return totalCostRoute; }
+
+    public void setTotalCostRoute(int totalCostRoute) { this.totalCostRoute = totalCostRoute; }
 
     public int getInitialVertex() {
         return initialVertex;
@@ -40,11 +45,12 @@ public class Route {
         Route route = (Route) o;
         return initialVertex == route.initialVertex &&
                 vertexDistances == route.vertexDistances &&
-                finalVertex == route.finalVertex;
+                finalVertex == route.finalVertex &&
+                totalCostRoute == route.totalCostRoute;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(initialVertex, vertexDistances, finalVertex);
+        return Objects.hash(initialVertex, vertexDistances, finalVertex, totalCostRoute);
     }
 }

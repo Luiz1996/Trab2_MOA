@@ -6,7 +6,13 @@ import java.util.Scanner;
 public class Console {
 
     public static void cleanDisplay() {
+
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    }
+
+    public static void endsApplication() {
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.exit(0);
     }
 
     public static int showMenu() {
