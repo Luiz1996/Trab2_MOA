@@ -27,7 +27,7 @@ public class Main {
             switch (option) {
                 case 1:
                     if(myCities.size() > 0){
-                        JOptionPane.showMessageDialog(null, "Para reimportar as cidades, use a Opção 5 e resete as informações.", "Falha", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Para reimportar as cidades, use a Opção 8 e resete as informações.", "Falha", JOptionPane.ERROR_MESSAGE);
                     }else{
                         myCities = fileController.importCities(myCities);
                     }
@@ -66,7 +66,6 @@ public class Main {
                         myRoute = travellingSalesmanController.nearestNeighborHeuristicTSP(myCities);
                         myRoute = travellingSalesmanController.getParametersForSimulatedAnnealing(myCities, myRoute);
                         routeType = 5;
-                        //Console.cleanDisplay();
                         if(myRoute.size() > 0){
                             JOptionPane.showMessageDialog(null, "A meta-heurística Simulated Annealing com Vizinho Mais Próximo gerou a rota com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         }
@@ -79,7 +78,6 @@ public class Main {
                         myRoute = travellingSalesmanController.nearestInsertionHeuristicTSP(myCities);
                         myRoute = travellingSalesmanController.getParametersForSimulatedAnnealing(myCities, myRoute);
                         routeType = 6;
-                        //Console.cleanDisplay();
                         if(myRoute.size() > 0){
                             JOptionPane.showMessageDialog(null, "A meta-heurística Simulated Annealing com Inserção Mais Próxima gerou a rota com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         }
