@@ -175,7 +175,6 @@ public class TravellingSalesmanController {
         double initialTemperature = 0;
         double finalTemperature = 0;
         int numberOfNeighbors = 0;
-        int totalCostActualRoute = getRouteCost(initialRoute);
 
         //obtendo informações sobre a temperatura inicial
         System.out.print("Informe a temperatura inicial(>0.0): ");
@@ -225,7 +224,6 @@ public class TravellingSalesmanController {
         System.out.println("A temperatura inicial fornecida é de: " + initialTemperature);
         System.out.println("A temperatura final fornecida é de: " + finalTemperature);
         System.out.printf("A temperatura será decrementada de %.2fºC em %.2fºC graus.\n", decrementTemperature, decrementTemperature);
-        System.out.println("A rota inicial possui um custo de: " + totalCostActualRoute);
 
         return simulatedAnnealingMetaHeuristicTSP(myCities, initialRoute, initialTemperature, finalTemperature, numberOfNeighbors, decrementTemperature);
     }
