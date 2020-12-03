@@ -16,9 +16,6 @@ public class TravellingSalesmanController {
     final int THOUSAND = 1000;
     final int TEN_THOUSAND = 10000;
 
-    int custoASerAdicionado = 0;
-    int custoASerRemovido = 0;
-
     //heurística do vizinho mais próximo
     public List<Route> nearestNeighborHeuristicTSP(List<City> myCities) {
         //variáveis auxiliares
@@ -209,11 +206,11 @@ public class TravellingSalesmanController {
         }
 
         //obtendo informações sobre a quantidade de vizinhos que serão avaliados
-        System.out.print("Informe a quantidade de vizinhos(>0 e <=" + initialRoute.size() + "): ");
+        System.out.print("Informe a quantidade de vizinhos(>0): ");
         try{
             numberOfNeighbors = input.nextInt();
-            if(numberOfNeighbors <= 0 || numberOfNeighbors > initialRoute.size()){
-                JOptionPane.showMessageDialog(null, "A vizinhança a ser avaliada deve, obrigatoriamente, ser maior que zero e menor que ou igual a " + initialRoute.size() + ".", "Falha", JOptionPane.ERROR_MESSAGE);
+            if(numberOfNeighbors <= 0){
+                JOptionPane.showMessageDialog(null, "A vizinhança a ser avaliada deve, obrigatoriamente, ser maior que zero.", "Falha", JOptionPane.ERROR_MESSAGE);
                 Console.cleanDisplay();
                 return new ArrayList<>();
             }
@@ -230,53 +227,43 @@ public class TravellingSalesmanController {
         System.out.printf("A temperatura será decrementada de %.2fºC em %.2fºC graus.\n", decrementTemperature, decrementTemperature);
         System.out.println("A rota inicial possui um custo de: " + totalCostActualRoute);
 
-        return simulatedAnnealingMetaHeuristicTSP(myCities, initialRoute, initialTemperature, finalTemperature, numberOfNeighbors, decrementTemperature, totalCostActualRoute);
+        return simulatedAnnealingMetaHeuristicTSP(myCities, initialRoute, initialTemperature, finalTemperature, numberOfNeighbors, decrementTemperature);
     }
 
     //heurística da inserção mais próxima
-    private List<Route> simulatedAnnealingMetaHeuristicTSP(List<City> myCities, List<Route> initialRoute, double initialTemperature, double finalTemperature, int numberOfNeighbors, double decrementTemperature, int totalCostActualRoute) {
+    private List<Route> simulatedAnnealingMetaHeuristicTSP(List<City> myCities, List<Route> initialRoute, double initialTemperature, double finalTemperature, int numberOfNeighbors, double decrementTemperature) {
         //variáveis auxiliares
         List<Route> actualRoute = copyRoute(initialRoute);
         List<Route> bestRoute = copyRoute(initialRoute);
-        int totalCostBestRoute = totalCostActualRoute;
+
+        int totalCostActualRoute = getRouteCost(initialRoute);
+        int totalCostBestRoute = getRouteCost(initialRoute);
 
         while(initialTemperature > finalTemperature){
             for(int evaluateNeighbors = 0; evaluateNeighbors < numberOfNeighbors; evaluateNeighbors++){
-                int totalCostNewRoute = totalCostActualRoute;
-
                 //obtendo rota a partir de uma vizinhança
-                List<Route> newRoute =  generateNeighboringRoute(actualRoute, myCities);
-
-                //atualizando custo da nova rota
-                totalCostNewRoute = totalCostNewRoute + this.custoASerAdicionado;
-                totalCostNewRoute = totalCostNewRoute - this.custoASerRemovido;
+                List<Route> bestNeighbor = returnsBestNeighbor(actualRoute, myCities);
+                int totalCostNewRoute = getRouteCost(bestNeighbor);
 
                 int deltaCost = (totalCostNewRoute - totalCostActualRoute);
 
-                //System.out.println("delta custo: " + deltaCost);
-
                 if(deltaCost < 0){
-                    //System.out.println("caiu no if...NOVA ROTA FOI OTIMIZADA");
-                    actualRoute = copyRoute(newRoute);
-                    totalCostActualRoute = totalCostNewRoute;
-                    if(totalCostNewRoute < totalCostBestRoute){
-                        bestRoute = copyRoute(newRoute);
-                        totalCostBestRoute = totalCostNewRoute;
+                    actualRoute = copyRoute(bestNeighbor);
+                    totalCostActualRoute = getRouteCost(bestNeighbor);
+
+                    if(totalCostNewRoute <= totalCostBestRoute){
+                        bestRoute = copyRoute(bestNeighbor);
+                        totalCostBestRoute = getRouteCost(bestNeighbor);
                     }
                 }else{
                     double randomNumber = getRandomDoubleValue();
                     double expValue = Math.exp((-deltaCost)/initialTemperature);
 
                     if(randomNumber < expValue){
-                        //System.out.println("ESTÁ PIOR E FOI ACEITA");
-                        actualRoute = copyRoute(newRoute);
+                        actualRoute = copyRoute(bestNeighbor);
                         totalCostActualRoute = totalCostNewRoute;
-                    }else{
-                        //System.out.println("ESTÁ PIOR, POREM NÃO FOI ACEITA");
                     }
                 }
-
-                //System.gc();
             }
 
             //atualiza a temperatura
@@ -286,8 +273,31 @@ public class TravellingSalesmanController {
         return bestRoute;
     }
 
+    public List<Route> returnsBestNeighbor(List<Route> actualRoute, List<City> myCities){
+        List<Route> bestNeighbor;
+        List<Route> newRoute =  generateNeighboringRoute_TwoCitiesRandom(actualRoute, myCities);
+        List<Route> newRoute1 = generateNeighboringRoute_TwoConsecutiveCities(newRoute, myCities);
+        List<Route> newRoute2 = generateNeighboringRoute_TwoConsecutiveCities(newRoute, myCities);
+
+        int totalCostNewRoute = getRouteCost(newRoute);
+        int totalCostNewRoute_1 = getRouteCost(newRoute1);
+        int totalCostNewRoute_2 = getRouteCost(newRoute2);
+
+        if(totalCostNewRoute < totalCostNewRoute_1){
+            bestNeighbor = copyRoute(newRoute);
+        }else{
+            if(totalCostNewRoute_1 < totalCostNewRoute_2){
+                bestNeighbor = copyRoute(newRoute1);
+            }else{
+                bestNeighbor = copyRoute(newRoute);
+            }
+        }
+
+        return bestNeighbor;
+    }
+
     private List<Route> copyRoute(List<Route> routeOriginal){
-       List<Route> routeCopied = new ArrayList<>();
+        List<Route> routeCopied = new ArrayList<>();
 
         for (Route route : routeOriginal) {
             Route rt = new Route();
@@ -302,18 +312,43 @@ public class TravellingSalesmanController {
         return routeCopied;
     }
 
-    private List<Route> generateNeighboringRoute(List<Route> actualRoute, List<City> myCities){
-        this.custoASerAdicionado = 0;
-        this.custoASerRemovido = 0;
+    private List<Route> generateNeighboringRoute_TwoCitiesRandom(List<Route> actualRoute, List<City> myCities){
+        //sorteando as cidades da rota que serão alteradas
+        int firstIndexRandom = random.nextInt(actualRoute.size() - 4) + 2;
+        int secondIndexRandom = random.nextInt(actualRoute.size() - 4) + 2;
 
+        if(firstIndexRandom == secondIndexRandom){
+            while(firstIndexRandom == secondIndexRandom){
+                secondIndexRandom = random.nextInt(actualRoute.size() - 4) + 2;
+            }
+        }
+
+        //nova rota gerada após as trocas das cidades
+        List<Route> newRoute = copyRoute(actualRoute);
+
+        int cityAux = newRoute.get(secondIndexRandom).getFinalVertex();
+
+        newRoute.get(secondIndexRandom).setFinalVertex(newRoute.get(firstIndexRandom).getFinalVertex());
+        newRoute.get(secondIndexRandom).setVertexDistances(myCities.get(newRoute.get(secondIndexRandom).getInitialVertex()).getDistancias().get(newRoute.get(secondIndexRandom).getFinalVertex()));
+
+        newRoute.get(secondIndexRandom + 1).setInitialVertex(newRoute.get(firstIndexRandom).getFinalVertex());
+        newRoute.get(secondIndexRandom + 1).setVertexDistances(myCities.get(newRoute.get(secondIndexRandom + 1).getInitialVertex()).getDistancias().get(newRoute.get(secondIndexRandom + 1).getFinalVertex()));
+
+        newRoute.get(firstIndexRandom).setFinalVertex(cityAux);
+        newRoute.get(firstIndexRandom).setVertexDistances(myCities.get(newRoute.get(firstIndexRandom).getInitialVertex()).getDistancias().get(newRoute.get(firstIndexRandom).getFinalVertex()));
+
+        newRoute.get(firstIndexRandom + 1).setInitialVertex(cityAux);
+        newRoute.get(firstIndexRandom + 1).setVertexDistances(myCities.get(newRoute.get(firstIndexRandom + 1).getInitialVertex()).getDistancias().get(newRoute.get(firstIndexRandom + 1).getFinalVertex()));
+
+        return newRoute;
+    }
+
+    //gera uma vizinhança pra duas cidades consecutivas
+    private List<Route> generateNeighboringRoute_TwoConsecutiveCities(List<Route> actualRoute, List<City> myCities){
         //sorteando as cidades da rota que serão alteradas
         int swappedCities1;
         int swappedCities2 = random.nextInt(actualRoute.size());
         int swappedCities3;
-        //costToAddAndRemove[ZERO] = ZERO;
-        //costToAddAndRemove[UM] = ZERO;
-
-        //System.out.println("swappedCities2: " + swappedCities2);
 
         //nova rota gerada após as trocas das cidades
         List<Route> newRoute = copyRoute(actualRoute);
@@ -330,12 +365,6 @@ public class TravellingSalesmanController {
             swappedCities3 = (swappedCities2 + 1);
         }
 
-        /*GERANDO NOVA ROTA, OU SEJA, UMA NOVA ROTA ALTERANDO PARA UMA NOVA VIZINHANÇA*/
-        //obtendo custos a ser removidos da rota
-        this.custoASerRemovido += newRoute.get(swappedCities1).getVertexDistances();
-        this.custoASerRemovido += newRoute.get(swappedCities2).getVertexDistances();
-        this.custoASerRemovido += newRoute.get(swappedCities3).getVertexDistances();
-
         //variáveis auxiliares nas trocas
         Route rt1 =  new Route();
         Route rt2 =  new Route();
@@ -346,21 +375,15 @@ public class TravellingSalesmanController {
         rt2.setInitialVertex(newRoute.get(swappedCities2).getFinalVertex());
         rt2.setVertexDistances(newRoute.get(swappedCities2).getVertexDistances());
 
-        this.custoASerAdicionado += rt2.getVertexDistances();
-
         //atualizando primeiro índice
         rt1.setInitialVertex(newRoute.get(swappedCities1).getInitialVertex());
         rt1.setFinalVertex(newRoute.get(swappedCities3).getInitialVertex());
         rt1.setVertexDistances(myCities.get(rt1.getInitialVertex()).getDistancias().get(rt1.getFinalVertex()));
 
-        this.custoASerAdicionado += rt1.getVertexDistances();
-
         //atualizando terceiro índice
         rt3.setInitialVertex(newRoute.get(swappedCities1).getFinalVertex());
         rt3.setFinalVertex(newRoute.get(swappedCities3).getFinalVertex());
         rt3.setVertexDistances(myCities.get(rt3.getInitialVertex()).getDistancias().get(rt3.getFinalVertex()));
-
-        this.custoASerAdicionado += rt3.getVertexDistances();
 
         newRoute.set(swappedCities1, rt1);
         newRoute.set(swappedCities2, rt2);
