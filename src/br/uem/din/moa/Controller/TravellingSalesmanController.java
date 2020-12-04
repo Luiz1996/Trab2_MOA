@@ -240,25 +240,25 @@ public class TravellingSalesmanController {
         while(initialTemperature > finalTemperature){
             for(int evaluateNeighbors = 0; evaluateNeighbors < numberOfNeighbors; evaluateNeighbors++){
                 //obtendo rota a partir de uma vizinhança
-                List<Route> bestNeighbor = returnsBestNeighbor(actualRoute, myCities);
-                int totalCostNewRoute = getRouteCost(bestNeighbor);
+                List<Route> newRoute = returnsBestNeighbor(actualRoute, myCities);
+                int totalCostNewRoute = getRouteCost(newRoute);
 
                 int deltaCost = (totalCostNewRoute - totalCostActualRoute);
 
                 if(deltaCost < 0){
-                    actualRoute = copyRoute(bestNeighbor);
-                    totalCostActualRoute = getRouteCost(bestNeighbor);
+                    actualRoute = newRoute;
+                    totalCostActualRoute = getRouteCost(newRoute);
 
                     if(totalCostNewRoute <= totalCostBestRoute){
-                        bestRoute = copyRoute(bestNeighbor);
-                        totalCostBestRoute = getRouteCost(bestNeighbor);
+                        bestRoute = copyRoute(actualRoute);
+                        totalCostBestRoute = getRouteCost(newRoute);
                     }
                 }else{
                     double randomNumber = getRandomDoubleValue();
                     double expValue = Math.exp((-deltaCost)/initialTemperature);
 
                     if(randomNumber < expValue){
-                        actualRoute = copyRoute(bestNeighbor);
+                        actualRoute = newRoute;
                         totalCostActualRoute = totalCostNewRoute;
                     }
                 }
@@ -282,12 +282,12 @@ public class TravellingSalesmanController {
         int totalCostNewRoute_2 = getRouteCost(newRoute2);
 
         if(totalCostNewRoute < totalCostNewRoute_1){
-            bestNeighbor = copyRoute(newRoute);
+            bestNeighbor = newRoute;
         }else{
             if(totalCostNewRoute_1 < totalCostNewRoute_2){
-                bestNeighbor = copyRoute(newRoute1);
+                bestNeighbor = newRoute1;
             }else{
-                bestNeighbor = copyRoute(newRoute);
+                bestNeighbor = newRoute;
             }
         }
 
